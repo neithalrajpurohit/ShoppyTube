@@ -1,0 +1,69 @@
+[
+  {
+    "title": "Women's Bags & Wallets",
+    "id": 1,
+    "imageUrl": "https://images-do.nyc3.cdn.digitaloceanspaces.com/315-3/product_images/1671766701jpg",
+    "type": "women"
+  },
+  {
+    "title": "Women's Footwear",
+    "id": 2,
+    "imageUrl": "https://static.wixstatic.com/media/6fcb25_a403a1454cac4d22b894291a9ba271ef~mv2.jpg/v1/fill/w_625,h_625,al_c,q_85,usm_0.66_1.00_0.01/6fcb25_a403a1454cac4d22b894291a9ba271ef~mv2.webp",
+    "type": "women"
+  },
+  {
+    "title": "Women's Fragrance",
+    "id": 3,
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0561/9256/5292/products/WomanBox-01_500x.jpg?v=1649674205",
+    "type": "women"
+  },
+  {
+    "title": "Women's Indian Wear",
+    "id": 4,
+    "imageUrl": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSXbqQLDRwuafXVV4whd3J_UeG38s5mUOdYd4ttN8TRPPCmNI4r43QF98da6nJH7_b4lsFpCd9JwE97g8MsWVjtQigC8yMRg8Ghk1z41vE&usqp=CAE",
+    "type": "women"
+  },
+  {
+    "title": "Women's Western War",
+    "id": 5,
+    "imageUrl": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQ1oGRWKQBlEI5VUUiEp_GaUfp8gmVo8YkkXrEvaEmU6XIz88MW-ZA4Fp4swhBLLAA_lt0Z1ZFCAYsQAFOFesXCxCgEZXQo&usqp=CAE",
+    "type": "women"
+  },
+  {
+    "title": "Women's Watches",
+    "id": 6,
+    "imageUrl": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQkGQqDpaWjR14GXpBttM6DXFpyHLqBxQZVqrHkACci02O2QHD2AyoacfYxLkEzPdCegll1njOsMERTYyfBnjCLBiy8qlQWi5Do0-nxB3Q&usqp=CAE",
+    "type": "women"
+  },
+  {
+    "title": "Women's Sunglasses",
+    "id": 7,
+    "imageUrl": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcR6T4n6MRrUUK8JWZh_BR509VwbngyijbyGZfEyaSZnuVxtkD4rqCQLUBCcYCwAF0GJRMI5ndOR6KTV0_Bpnz8HLYEXqEio&usqp=CAE",
+    "type": "women"
+  },
+  {
+    "title": "Home Decor - Products",
+    "id": 8,
+    "imageUrl": "https://i0.wp.com/hitchki.in/wp-content/uploads/In-Circle-Antique-Peacock-Wall-Decor-1.jpg?fit=1200%2C1200&ssl=1",
+    "type": "Decor"
+  },
+  {
+    "title": "Home Decor - Floral Paintings",
+    "id": 9,
+    "imageUrl": "https://ii3.pepperfry.com/media/catalog/product/v/i/494x544/violet-violet-floral-wall-painting-embossed-original-painting-for-home-d-cor-by-art-street-violet-vi-mojdku.jpg",
+
+    "type": "Decor"
+  },
+  {
+    "title": "Home Decor - Poojs Metals",
+    "id": 10,
+    "imageUrl": "https://i.pinimg.com/originals/8d/06/ec/8d06ec8feae87a5f7819ed663134085a.jpg",
+    "type": "Decor"
+  },
+  {
+    "title": "Home Decor - Pooja Mandirs",
+    "id": 11,
+    "imageUrl": "https://i.pinimg.com/736x/12/c6/de/12c6de2b832e5f9df60ad6ff655131fc--contemporary-homes-mandir-design-puja-room.jpg",
+    "type": "Decor"
+  }
+]
