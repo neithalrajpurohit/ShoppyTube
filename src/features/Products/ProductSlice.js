@@ -4,6 +4,7 @@ import productData from "../../data/products.json";
 const initialState = {
   data: {
     products: [],
+    productDetails: {},
   },
 };
 
@@ -18,8 +19,15 @@ export const ProductSlice = createSlice({
       state.data.products = allProducts;
       console.log(action);
     },
+    getProductDetails: (state, action) => {
+      let productDetails = productData.find((product) => {
+        return product.id === action.payload.id;
+      });
+      state.data.productDetails = productDetails;
+    },
   },
 });
 
-export const { getProductsByCategory } = ProductSlice.actions;
+export const { getProductsByCategory, getProductDetails } =
+  ProductSlice.actions;
 export default ProductSlice.reducer;

@@ -1,8 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ decorBrand, id, brand, sP, mP, title, image }) => {
+  const navigate = useNavigate();
+
   return (
-    <div className=" max-w-sm bg-[#efeff0] border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div
+      className=" max-w-sm cursor-pointer bg-[#efeff0] border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+      onClick={() => navigate(`/product/details/${id}`)}>
       <div className="w-[380px] h-[380px] ">
         <img
           className="p-8 rounded-t-lg h-full w-full"
