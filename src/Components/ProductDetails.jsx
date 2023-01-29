@@ -1,24 +1,39 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { getProductDetails } from "../features/Products/ProductSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import Header from "./Header";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
-import { useState } from "react";
+import { addToCart } from "../features/Cart/CartSlice";
 
 const ProductDetails = () => {
   const dispatch = useDispatch();
   let params = useParams();
-
   const [mark, setMark] = useState(null);
+  const [count, setcount] = useState(0);
   const productdetails = useSelector(
     (state) => state.product.data.productDetails
   );
+
+  const cartItems = useSelector((state) => state.cart.cartItems);
+  function incrementHandler() {
+    dispatch(addToCart({ id: productdetails.id }));
+  }
+  function decrementHandler() {
+    if (count > 0) {
+      setcount((count) => count - 1);
+    }
+  }
   useEffect(() => {
     dispatch(getProductDetails({ id: params.productId }));
   }, []);
   console.log(productdetails);
+
+  let toggleButton = cartItems.find((cartId) => {
+    return cartId.id === productdetails.id;
+  });
+  console.log(toggleButton, "jh");
   return (
     <div>
       <Header />
@@ -62,6 +77,61 @@ const ProductDetails = () => {
                 })}
               </div>
             )}
+            <div className="flex items-center m-5 gap-8">
+              {!toggleButton ? (
+                <button
+                  type="button"
+                  className="text-white bg-blue-700  hover:bg-blue-800 focus:ring-4 focus:outline-none  focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  onClick={() =>
+                    dispatch(addToCart({ id: productdetails.id }))
+                  }>
+                  <svg
+                    aria-hidden="true"
+                    className="w-5 h-5 mr-2 -ml-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
+                  </svg>
+                  Add to Cart
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="text-white bg-blue-700  hover:bg-blue-800 focus:ring-4 focus:outline-none  focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                  <svg
+                    aria-hidden="true"
+                    className="w-5 h-5 mr-2 -ml-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
+                  </svg>
+                  Go to Cart
+                </button>
+              )}
+              <div className="flex items-center gap-5  w-[50px] ">
+                <button
+                  className=" flex px-5 py-3 justify-content items-center bg-[#2176ff] border-1 rounded border-gray-600"
+                  onClick={() => incrementHandler()}>
+                  +
+                </button>
+                <p>
+                  {
+                    cartItems?.find((item) => {
+                      return item.id === productdetails.id;
+                    })?.qty
+                  }
+                </p>
+
+                <button
+                  className=" flex px-5 py-3 justify-content items-center bg-[#2176ff] border-1 rounded border-gray-600"
+                  onClick={() => decrementHandler()}>
+                  -
+                </button>
+              </div>
+            </div>
+
             <table className=" mt-10 w-full text-sm text-left text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                 <tr className="">
@@ -78,7 +148,7 @@ const ProductDetails = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr class="bg-white dark:bg-gray-800">
+                <tr className="bg-white dark:bg-gray-800">
                   {productdetails?.prodDetails?.map((prod, i) => {
                     return (
                       <td key={i} className="px-6 py-4">
@@ -89,19 +159,6 @@ const ProductDetails = () => {
                 </tr>
               </tbody>
             </table>
-            <button
-              type="button"
-              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none  focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-              <svg
-                aria-hidden="true"
-                class="w-5 h-5 mr-2 -ml-1"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
-              </svg>
-              Add to Cart
-            </button>
           </div>
         </div>
       </div>
