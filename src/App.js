@@ -6,6 +6,8 @@ import Homedecor from "./Components/Homedecor";
 import ProductList from "./Components/ProductList";
 import { Route, Routes } from "react-router-dom";
 import ProductDetails from "./Components/ProductDetails";
+import Cart from "./Components/Cart";
+import WishList from "./Components/WishList";
 function App() {
   return (
     <div>
@@ -18,6 +20,8 @@ function App() {
           path="/product/details/:productId"
           element={<ProductDetails />}
         />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/wishlist" element={<WishList />} />
       </Routes>
     </div>
   );

@@ -1,44 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { getProductDetails } from "../features/Products/ProductSlice";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
-import { addToCart } from "../features/Cart/CartSlice";
+import {
+  addToCart,
+  getAllCartItems,
+  decrementQty,
+} from "../features/Cart/CartSlice";
 
 const ProductDetails = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   let params = useParams();
   const [mark, setMark] = useState(null);
-  const [count, setcount] = useState(0);
+
   const productdetails = useSelector(
     (state) => state.product.data.productDetails
   );
 
   const cartItems = useSelector((state) => state.cart.cartItems);
-  function incrementHandler() {
-    dispatch(addToCart({ id: productdetails.id }));
-  }
-  function decrementHandler() {
-    if (count > 0) {
-      setcount((count) => count - 1);
-    }
-  }
+
+  console.log(cartItems);
+
   useEffect(() => {
     dispatch(getProductDetails({ id: params.productId }));
+    dispatch(getAllCartItems());
   }, []);
-  console.log(productdetails);
 
   let toggleButton = cartItems.find((cartId) => {
     return cartId.id === productdetails.id;
   });
-  console.log(toggleButton, "jh");
+
   return (
     <div>
       <Header />
       <div className="bg-[#639fab]">
-        <div className="h-[100px] min-h-[100vh] max-w-[1200px] mx-auto flex bg-[#e5d4ce]">
+        <div className="h-[100px] min-h-[100vh] max-w-[1200px] mx-auto flex bg-[#639fab]">
           <Carousel width="480px" dynamicHeight={true}>
             {productdetails?.images?.map((img, i) => {
               return (
@@ -98,7 +98,8 @@ const ProductDetails = () => {
               ) : (
                 <button
                   type="button"
-                  className="text-white bg-blue-700  hover:bg-blue-800 focus:ring-4 focus:outline-none  focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                  className="text-white bg-blue-700  hover:bg-blue-800 focus:ring-4 focus:outline-none  focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  onClick={() => navigate("/cart")}>
                   <svg
                     aria-hidden="true"
                     className="w-5 h-5 mr-2 -ml-1"
@@ -113,20 +114,22 @@ const ProductDetails = () => {
               <div className="flex items-center gap-5  w-[50px] ">
                 <button
                   className=" flex px-5 py-3 justify-content items-center bg-[#2176ff] border-1 rounded border-gray-600"
-                  onClick={() => incrementHandler()}>
+                  onClick={() => {
+                    dispatch(addToCart({ id: productdetails.id }));
+                  }}>
                   +
                 </button>
                 <p>
-                  {
-                    cartItems?.find((item) => {
-                      return item.id === productdetails.id;
-                    })?.qty
-                  }
+                  {cartItems?.find((item) => {
+                    return item.id === productdetails.id;
+                  })?.qty || 0}
                 </p>
 
                 <button
                   className=" flex px-5 py-3 justify-content items-center bg-[#2176ff] border-1 rounded border-gray-600"
-                  onClick={() => decrementHandler()}>
+                  onClick={() => {
+                    dispatch(decrementQty({ id: productdetails.id }));
+                  }}>
                   -
                 </button>
               </div>

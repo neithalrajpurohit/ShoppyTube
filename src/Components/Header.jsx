@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { NavLink } from "react-router-dom";
 import useCategories from "../CustomHooks/useCategories";
+import { BsCartCheckFill } from "react-icons/bs";
+import { AiOutlineHeart } from "react-icons/ai";
+import { getAllCartItems } from "../features/Cart/CartSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 const Header = () => {
   const [WomenCategory, decorCategory] = useCategories();
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.cartItems);
 
+  useEffect(() => {
+    dispatch(getAllCartItems());
+  }, []);
   return (
     <nav className="bg-[#0e6ba8] border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900">
       <div className="container flex flex-wrap items-center justify-between mx-auto">
@@ -40,6 +49,37 @@ const Header = () => {
             </svg>
             <span className="sr-only">Search</span>
           </button>
+          <NavLink
+            style={({ isActive }) => {
+              return {
+                color: isActive ? "blue" : "black",
+                fontWeight: isActive ? "bold" : "normal",
+              };
+            }}
+            to="/wishlist"
+            className="block py-2 pl-3    text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+            <div className="relative  ">
+              <AiOutlineHeart className="text-2xl mr-[50px] " />
+              <span className="absolute text-[12px] bg-white rounded-full flex justify-center items-center "></span>
+            </div>
+          </NavLink>
+          <NavLink
+            style={({ isActive }) => {
+              return {
+                color: isActive ? "blue" : "black",
+                fontWeight: isActive ? "bold" : "normal",
+              };
+            }}
+            to="/cart"
+            className="block py-2 pl-3    text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+            <div className="relative  ">
+              <BsCartCheckFill className="text-2xl mr-[50px] " />
+              <span className="absolute text-[12px] bg-white rounded-full flex justify-center items-center h-[20px] w-[20px] -top-[15px] left-2">
+                {cartItems?.length}
+              </span>
+            </div>
+          </NavLink>
+
           <div className="relative hidden md:block">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg
@@ -56,6 +96,7 @@ const Header = () => {
               </svg>
               <span className="sr-only">Search icon</span>
             </div>
+
             <input
               type="text"
               id="search-navbar"
