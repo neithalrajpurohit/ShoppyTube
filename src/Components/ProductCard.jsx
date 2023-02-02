@@ -23,7 +23,7 @@ const ProductCard = ({ decorBrand, id, brand, sP, mP, title, image }) => {
           </h5>
         </a>
         <a href="#">
-          <h5 className="text-xl font-semibold tracking-tight text-gray-700 dark:text-white">
+          <h5 className="text-[17px] font-semibold tracking-tight text-gray-600 dark:text-white">
             {title}
           </h5>
         </a>
@@ -77,13 +77,14 @@ const ProductCard = ({ decorBrand, id, brand, sP, mP, title, image }) => {
             5.0
           </span>
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-end justify-start gap-2">
           <span className="text-3xl font-bold text-gray-900 dark:text-white">
             &#8377;{sP}
           </span>
-          <span className="text-xl  text-gray-900 dark:text-white line-through">
+          <span className="text-xl  text-gray-500 dark:text-white line-through">
             &#8377;{mP}
           </span>
+          <span className="text-[#ff871f]">(40% OFF)</span>
           {/* <a
             href="#"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">

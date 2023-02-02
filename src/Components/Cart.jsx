@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-
+import useRazorpay from "react-razorpay";
+import { v4 } from "uuid";
 import {
   addToCart,
   getAllCartItems,
@@ -14,19 +15,81 @@ import { addToWishList } from "../features/Wishlist/WishListSlice";
 const Cart = () => {
   const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cart.cartItems);
-
   const dispatch = useDispatch();
-
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [mrp, setMRP] = useState(0);
   function deleteCartItems(id) {
     dispatch(removeFromCart({ id }));
-    // console.log(id);
   }
+  const calculateTotalAmount = () => {
+    let totalAmount = cartItems.reduce(
+      (prev, curr) => curr.sellingPrice * curr.qty + prev,
+      0
+    );
+    setTotalPrice(totalAmount);
+    let totalMRP = cartItems.reduce(
+      (prev, curr) => curr.marketPrice * curr.qty + prev,
+      0
+    );
+    setMRP(totalMRP);
+  };
+  useEffect(() => {
+    calculateTotalAmount();
+  }, [cartItems]);
+  const Razorpay = useRazorpay();
+
+  const handlePayment = async (params) => {
+    //  Create order on your backend
+    const rzp1 = new Razorpay({
+      key_id: process.env.REACT_APP_RAZORPAY_KEYS,
+      key_secret: process.env.REACT_APP_RAZORPAY_SECRET,
+    });
+    const options = {
+      // Enter the Key ID generated from the Dashboard
+      amount: totalPrice, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      currency: "INR",
+      name: "SHOPPY TUBE",
+      description: "Test Transaction",
+      image: "https://example.com/your_logo",
+      order_id: "order.id", //This is a sample Order ID. Pass the `id` obtained in the response of createOrder().
+      handler: function (response) {
+        alert(response.razorpay_payment_id);
+        alert(response.razorpay_order_id);
+        alert(response.razorpay_signature);
+      },
+      prefill: {
+        name: "Piyush Garg",
+        email: "youremail@example.com",
+        contact: "9999999999",
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+    let order = await rzp1.orders.create(options);
+
+    rzp1.on("payment.failed", function (response) {
+      alert(response.error.code);
+      alert(response.error.description);
+      alert(response.error.source);
+      alert(response.error.step);
+      alert(response.error.reason);
+      alert(response.error.metadata.order_id);
+      alert(response.error.metadata.payment_id);
+    });
+
+    rzp1.open();
+  };
+
   return (
     <div>
       <Header />
-      {/* {cartItems.map(cartProducts)} */}
+
       <div
-        className=" bg-[#bbcde5]  w-full h-full  dark:bg-gray-900 bg-opacity-90 top-0 overflow-y-auto "
+        className="bg-[#e6e6e6] rounded-2xl  w-full h-full  dark:bg-gray-900 bg-opacity-90 top-0 overflow-y-auto "
         id="chec-div">
         {/*- more free and premium Tailwind CSS components at https://tailwinduikit.com/ -*/}
         <div
@@ -36,11 +99,12 @@ const Cart = () => {
             className="flex items-end lg:flex-row flex-col justify-center"
             id="cart">
             <div
-              className="lg:w-1/2 md:w-8/12 w-full lg:px-8 lg:py-14 md:px-6 px-4 md:py-8 py-4  bg-[#bbcde5] dark:bg-gray-800  overflow-x-hidden lg:h-screen h-auto"
+              style={{
+                background: `linear-gradient(to right, #ffecd2 0%, #fcb69f 100%)`,
+              }}
+              className="lg:w-1/2 md:w-8/12 w-full lg:px-8 lg:py-14 md:px-6 px-4 md:py-8 py-4  bg-[#bbcde5] rounded-2xl dark:bg-gray-800  overflow-x-hidden lg:h-screen h-auto"
               id="scroll">
-              <div
-                className="flex items-center text-gray-500 hover:text-gray-600 dark:text-white cursor-pointer"
-                onclick="checkoutHandler(false)">
+              <div className="flex items-center text-gray-500 hover:text-gray-600 dark:text-white cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="icon icon-tabler icon-tabler-chevron-left"
@@ -86,29 +150,38 @@ const Cart = () => {
                       <p className="text-xs leading-3 text-gray-800 dark:text-white md:pt-0 pt-4"></p>
 
                       <div className="flex items-center justify-between w-full pt-1">
-                        <p className="text-base font-black leading-none text-gray-800 dark:text-white">
+                        <p className="text-base flex-1 font-black leading-none text-gray-800 dark:text-white">
                           {cartProducts.title}
                         </p>
-                        <div className="flex items-center gap-5  w-[50px] ">
+                        <div className="flex flex-[.4] items-center justify-end gap-5  w-[50px] ">
                           <button
-                            className=" flex px-1 py-1 justify-content items-center bg-[#2176ff] border-1 rounded border-gray-600"
                             onClick={() => {
-                              dispatch(addToCart({ id: cartProducts.id }));
-                            }}>
-                            +
+                              dispatch(
+                                addToCart({
+                                  id: cartProducts.id,
+                                })
+                              );
+                            }}
+                            className="active:scale-95 transition-transform duration-150 relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+                            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                              +
+                            </span>
                           </button>
-                          <p>
-                            {cartItems?.find((item) => {
-                              return item.id === cartProducts.id;
-                            })?.qty || 0}
-                          </p>
+
+                          <p>{cartProducts.qty}</p>
 
                           <button
-                            className=" flex px-1 py-1 justify-content items-center bg-[#2176ff] border-1 rounded border-gray-600"
                             onClick={() => {
-                              dispatch(decrementQty({ id: cartProducts.id }));
-                            }}>
-                            -
+                              dispatch(
+                                decrementQty({
+                                  id: cartProducts.id,
+                                })
+                              );
+                            }}
+                            className="active:scale-95 transition-transform duration-150 relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+                            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                              -
+                            </span>
                           </button>
                         </div>
                       </div>
@@ -126,8 +199,16 @@ const Cart = () => {
                           <p
                             className="text-xs leading-3 underline text-gray-800 dark:text-white cursor-pointer"
                             onClick={() => {
-                              dispatch(addToWishList({ id: cartProducts.id }));
-                              dispatch(removeFromCart({ id: cartProducts.id }));
+                              dispatch(
+                                addToWishList({
+                                  id: cartProducts.id,
+                                })
+                              );
+                              dispatch(
+                                removeFromCart({
+                                  id: cartProducts.id,
+                                })
+                              );
                               navigate("/wishlist");
                             }}>
                             Add to Wishlist
@@ -147,28 +228,46 @@ const Cart = () => {
                 );
               })}
             </div>
-            <div className="lg:w-96 md:w-8/12 w-full bg-gray-100 dark:bg-gray-900 h-full">
+            <div
+              style={{
+                background: `linear-gradient(45deg, #ee9ca7 0%, #ffdde1 100%)`,
+              }}
+              className="lg:w-96 md:w-8/12 w-full bg-gray-100 dark:bg-gray-900 h-full">
               <div className="flex flex-col lg:h-screen h-auto lg:px-8 md:px-7 px-4 lg:py-20 md:py-10 py-6 justify-between overflow-y-auto">
                 <div>
                   <p className="lg:text-4xl text-3xl font-black leading-9 text-gray-800 dark:text-white">
                     Summary
                   </p>
                   <div className="flex items-center justify-between pt-16">
-                    <p className="text-base leading-none text-gray-800 dark:text-white">
-                      Subtotal
+                    <p className="text-base font-serif leading-none text-gray-800 dark:text-white">
+                      Total MRP :
                     </p>
-                    <p className="text-base leading-none text-gray-800 dark:text-white">
-                      ,000
+                    <p className=" text-base  leading-none text-gray-800 dark:text-white">
+                      &#8377; {mrp}
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between pt-6">
+                    <p className="text-base font-serif leading-none text-gray-800 dark:text-white">
+                      Selling Price :
+                    </p>
+                    <p className="text-base  leading-none text-gray-800 dark:text-white">
+                      &#8377; {totalPrice}
                     </p>
                   </div>
                   <div className="flex items-center justify-between pt-5">
-                    <p className="text-base leading-none text-gray-800 dark:text-white">
+                    <p className="text-base font-serif leading-none text-gray-800 dark:text-white">
                       Shipping
                     </p>
-                    <p className="text-base leading-none text-gray-800 dark:text-white" />
+                    <p className="text-base  leading-none text-gray-800 dark:text-white">
+                      {totalPrice > 1000 ? (
+                        "Free shipping"
+                      ) : (
+                        <span>&#8377; 200</span>
+                      )}
+                    </p>
                   </div>
                   <div className="flex items-center justify-between pt-5">
-                    <p className="text-base leading-none text-gray-800 dark:text-white">
+                    <p className="text-base font-serif leading-none text-gray-800 dark:text-white">
                       Tax
                     </p>
                     <p className="text-base leading-none text-gray-800 dark:text-white" />
@@ -176,16 +275,17 @@ const Cart = () => {
                 </div>
                 <div>
                   <div className="flex items-center pb-6 justify-between lg:pt-5 pt-20">
-                    <p className="text-2xl leading-normal text-gray-800 dark:text-white">
-                      Total
+                    <p className="text-2xl font-serif leading-normal text-gray-800 dark:text-white">
+                      Total :
                     </p>
-                    <p className="text-2xl font-bold leading-normal text-right text-gray-800 dark:text-white">
-                      ,240
+                    <p className="text-4xl font-serif leading-normal text-right text-gray-800 dark:text-white">
+                      &#8377;{" "}
+                      {totalPrice < 1000 ? totalPrice + 200 : totalPrice}
                     </p>
                   </div>
                   <button
-                    onclick="checkoutHandler1(true)"
-                    className="text-base leading-none w-full py-5 bg-gray-800 border-gray-800 border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 text-white dark:hover:bg-gray-700">
+                    className="text-white w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+                    onClick={() => handlePayment()}>
                     Checkout
                   </button>
                 </div>

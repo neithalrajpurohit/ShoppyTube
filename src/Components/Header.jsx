@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import useCategories from "../CustomHooks/useCategories";
 import { BsCartCheckFill } from "react-icons/bs";
 import { AiOutlineHeart } from "react-icons/ai";
+import { MdOutlineStorefront } from "react-icons/md";
 import { getAllCartItems } from "../features/Cart/CartSlice";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -16,14 +17,22 @@ const Header = () => {
     dispatch(getAllCartItems());
   }, []);
   return (
-    <nav className="bg-[#0e6ba8] border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900">
+    <nav
+      className="bg-[#0e6ba8] border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900"
+      style={{
+        background: "rgb(250,211,211)",
+        background: `linear-gradient(90deg, rgba(250,211,211,1) 0%, rgba(248,184,184,1) 66%, rgba(251,227,113,1) 100%)`,
+      }}>
       <div className="container flex flex-wrap items-center justify-between mx-auto">
         <a href="https://flowbite.com/" className="flex items-center">
-          <img
-            src="https://flowbite.com/docs/images/logo.svg"
-            className="h-6 mr-3 sm:h-9"
-            alt="Flowbite Logo"
-          />
+          {/* <img
+                        src={ShoppyTubeLogo}
+                        className="mr-3 h-10"
+                        alt="Flowbite Logo"
+                    /> */}
+          <span>
+            <MdOutlineStorefront className="text-[40px] mr-2 text-[#303030]" />
+          </span>
           <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
             Shoppy Tube
           </span>
@@ -52,7 +61,7 @@ const Header = () => {
           <NavLink
             style={({ isActive }) => {
               return {
-                color: isActive ? "blue" : "black",
+                color: isActive ? "black" : "black",
                 fontWeight: isActive ? "bold" : "normal",
               };
             }}
@@ -63,20 +72,23 @@ const Header = () => {
               <span className="absolute text-[12px] bg-white rounded-full flex justify-center items-center "></span>
             </div>
           </NavLink>
+
           <NavLink
             style={({ isActive }) => {
               return {
-                color: isActive ? "blue" : "black",
+                color: isActive ? "black" : "black",
                 fontWeight: isActive ? "bold" : "normal",
               };
             }}
             to="/cart"
-            className="block py-2 pl-3    text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
-            <div className="relative  ">
+            className="block py-2 pl-3 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">
+            <div className="relative">
               <BsCartCheckFill className="text-2xl mr-[50px] " />
-              <span className="absolute text-[12px] bg-white rounded-full flex justify-center items-center h-[20px] w-[20px] -top-[15px] left-2">
-                {cartItems?.length}
-              </span>
+              {cartItems?.length >= 1 && (
+                <span className="absolute text-[12px] bg-white rounded-full flex justify-center items-center h-[20px] w-[20px] -top-[15px] left-2">
+                  {cartItems?.length}
+                </span>
+              )}
             </div>
           </NavLink>
 

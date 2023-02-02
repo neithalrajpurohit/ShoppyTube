@@ -16,7 +16,11 @@ const WishList = () => {
     dispatch(getWishList());
   }, []);
   return (
-    <div className="bg-[#639fab] min-h-[100vh]">
+    <div
+      style={{
+        background: `linear-gradient(to right, #ffecd2 0%, #fcb69f 100%)`,
+      }}
+      className="bg-[#639fab] min-h-[100vh]">
       <Header />
       {wishList.length <= 0 ? (
         <div className="flex justify-center h-[100vh] w-full items-center">
@@ -27,8 +31,12 @@ const WishList = () => {
       ) : (
         <div className="relative max-w-[1200px] mt-10  mx-auto overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full   text-sm text-left text-gray-500 dark:text-gray-400">
-            <thead className="bg-[#bbcde5]   text-xs text-gray-700 uppercase  dark:bg-gray-700 dark:text-gray-400">
-              <tr className="bg-[#bbcde5] ">
+            <thead className="text-xs text-gray-700 uppercase  dark:bg-gray-700 dark:text-gray-400">
+              <tr
+                style={{
+                  background: `linear-gradient(-20deg, #fdd6bd 0%,  #f794a4 100%)`,
+                }}
+                className="bg-[#bbcde5] ">
                 <th scope="col" className="px-6 py-3">
                   <span className="sr-only">Image</span>
                 </th>
@@ -45,11 +53,14 @@ const WishList = () => {
               </tr>
             </thead>
 
-            <tbody className="bg-[#bbcde5]">
+            <tbody>
               {wishList.map((product) => {
                 return (
                   <tr
                     key={product.id}
+                    style={{
+                      background: `linear-gradient(-20deg, #f794a4 0%, #fdd6bd 100%)`,
+                    }}
                     className="bg-[#bbcde5]  border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-[#6790c5]  dark:hover:bg-gray-600">
                     <td className="w-32 p-4">
                       <img src={product.images[0]} alt="Apple Watch" />
@@ -67,8 +78,16 @@ const WishList = () => {
                           href="#"
                           className=" font-medium text-red-600 dark:text-red-500 hover:underline"
                           onClick={() => {
-                            dispatch(addToCart({ id: product.id }));
-                            dispatch(removeWishList({ id: product.id }));
+                            dispatch(
+                              addToCart({
+                                id: product.id,
+                              })
+                            );
+                            dispatch(
+                              removeWishList({
+                                id: product.id,
+                              })
+                            );
                           }}>
                           Move To Cart
                         </a>
@@ -76,7 +95,11 @@ const WishList = () => {
                           href="#"
                           className="font-medium text-r(ed-600 dark:text-red-500 hover:underline"
                           onClick={() =>
-                            dispatch(removeWishList({ id: product.id }))
+                            dispatch(
+                              removeWishList({
+                                id: product.id,
+                              })
+                            )
                           }>
                           Remove
                         </a>

@@ -34,6 +34,7 @@ const CartSlice = createSlice({
         allCartItems.push({ ...currentProduct, qty: 1 });
         localStorage.setItem("cart", JSON.stringify(allCartItems));
       }
+      allCartItems.sort((a, b) => (a.title > b.title ? 1 : -1));
       state.cartItems = allCartItems;
     },
     getAllCartItems: (state) => {
@@ -41,6 +42,7 @@ const CartSlice = createSlice({
       if (prevCartItems) {
         prevCartItems = JSON.parse(prevCartItems);
       }
+      prevCartItems.sort((a, b) => (a.title > b.title ? 1 : -1));
       state.cartItems = prevCartItems;
     },
     decrementQty: (state, action) => {

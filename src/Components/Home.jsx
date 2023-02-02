@@ -5,26 +5,25 @@ const Home = () => {
   return (
     <div>
       <Header />
-      <h1 className="flex justify-center font-serif text-4xl ">
+      <h1 className="flex justify-center font-serif text-4xl mb-4">
         Top Selling Products
       </h1>
-      <img
-        src="https://sslimages.shoppersstop.com/sys-master/root/hd0/h8f/29099657560094/indianwear_Top-Banner-Web_ygsefugfyurajesh67.jpg"
-        alt=""
-      />
-      <img
-        src="https://sslimages.shoppersstop.com/sys-master/root/h7a/hf9/29099656577054/westernwear_Top-Banner-Web_dhavaluyjfy56.jpg"
-        alt=""
-      />
-      <img
-        src="https://sslimages.shoppersstop.com/sys-master/root/hb5/hc4/29100146032670/Categories-in-Spotlight-Strip-Web_spoyttbgfrr.gif"
-        alt=""
-      />
-      <img
-        src="https://sslimages.shoppersstop.com/sys-master/root/h12/h1d/29100149800990/Offers-of-the-Week-Strip-Web_vchsgcyfhgdhsgfssjk.gif"
-        alt=""
-      />
-      <div className="flex flex-wrap">
+      <div className="flex flex-col items-center space-y-4">
+        <img
+          src="https://sslimages.shoppersstop.com/sys-master/root/hd0/h8f/29099657560094/indianwear_Top-Banner-Web_ygsefugfyurajesh67.jpg"
+          alt=""
+        />
+        <img
+          src="https://sslimages.shoppersstop.com/sys-master/root/h7a/hf9/29099656577054/westernwear_Top-Banner-Web_dhavaluyjfy56.jpg"
+          alt=""
+        />
+        <img
+          src="https://sslimages.shoppersstop.com/sys-master/root/hb5/hc4/29100146032670/Categories-in-Spotlight-Strip-Web_spoyttbgfrr.gif"
+          alt=""
+          className="mb-4"
+        />
+      </div>
+      <div className="flex flex-wrap justify-center">
         <img
           src="https://sslimages.shoppersstop.com/sys-master/root/h19/h8e/29099663228958/Suit-Sets-web_785754etrthfcs34rjjnn.jpg"
           alt=""
@@ -67,14 +66,6 @@ const Home = () => {
         />
         <img
           src="https://sslimages.shoppersstop.com/sys-master/root/h86/h98/29165993295902/elliza-allensolly_4-Widgets-webwom-hp-page-new-indian23125.jpg"
-          alt=""
-        />
-        <img
-          src="https://sslimages.shoppersstop.com/sys-master/root/hd0/hce/29100155207710/Big-Brands%2C-Bigger-Deals-Strip-Web_vscgdrsrg.gif"
-          alt=""
-        />
-        <img
-          src="https://sslimages.shoppersstop.com/sys-master/root/h78/h54/29120936935454/4-Widgets-Main-Web_Watches_curanpatti.jpg"
           alt=""
         />
       </div>
