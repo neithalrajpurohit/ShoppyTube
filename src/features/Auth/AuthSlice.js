@@ -74,6 +74,7 @@ const AuthSlice = createSlice({
           JSON.stringify({ ...userAccount, isLoggedIn: false })
         );
         state.user = { ...userAccount, isLoggedIn: false };
+        localStorage.removeItem("cart");
         action.payload.cb();
       }
     },

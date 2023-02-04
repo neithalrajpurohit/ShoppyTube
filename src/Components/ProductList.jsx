@@ -32,7 +32,7 @@ const ProductList = () => {
         {" "}
         Happy Shopping
       </h2>
-      {location.state.type === "search" ? (
+      {location.state?.type === "search" ? (
         <div className="text-center text-2xl font-serif">
           Search results for
           <span className="text-3xl font-serif"> : {location.state.query}</span>

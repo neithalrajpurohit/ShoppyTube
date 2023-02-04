@@ -11,7 +11,7 @@ import {
   decrementQty,
 } from "../features/Cart/CartSlice";
 import { addToWishList } from "../features/Wishlist/WishListSlice";
-
+import priceFormat from "../utils/priceFormat";
 const Cart = () => {
   const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -22,12 +22,12 @@ const Cart = () => {
     dispatch(removeFromCart({ id }));
   }
   const calculateTotalAmount = () => {
-    let totalAmount = cartItems.reduce(
+    let totalAmount = cartItems?.reduce(
       (prev, curr) => curr.sellingPrice * curr.qty + prev,
       0
     );
     setTotalPrice(totalAmount);
-    let totalMRP = cartItems.reduce(
+    let totalMRP = cartItems?.reduce(
       (prev, curr) => curr.marketPrice * curr.qty + prev,
       0
     );
@@ -85,215 +85,225 @@ const Cart = () => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        background: `linear-gradient(to right, #ffecd2 0%, #fcb69f 100%)`,
+      }}
+      className="bg-[#639fab] min-h-[100vh]">
       <Header />
-
-      <div
-        className="bg-[#e6e6e6] rounded-2xl  w-full h-full  dark:bg-gray-900 bg-opacity-90 top-0 overflow-y-auto "
-        id="chec-div">
-        {/*- more free and premium Tailwind CSS components at https://tailwinduikit.com/ -*/}
+      {cartItems?.length >= 1 ? (
         <div
-          className="w-full absolute z-10 right-0 h-full overflow-x-hidden transform translate-x-0 transition ease-in-out duration-700"
-          id="checkout">
+          className="bg-[#e6e6e6] rounded-2xl  w-full h-full  dark:bg-gray-900 bg-opacity-90 top-0 overflow-y-auto "
+          id="chec-div">
+          {/*- more free and premium Tailwind CSS components at https://tailwinduikit.com/ -*/}
           <div
-            className="flex items-end lg:flex-row flex-col justify-center"
-            id="cart">
+            className="w-full absolute z-10 right-0 h-full overflow-x-hidden transform translate-x-0 transition ease-in-out duration-700"
+            id="checkout">
             <div
-              style={{
-                background: `linear-gradient(to right, #ffecd2 0%, #fcb69f 100%)`,
-              }}
-              className="lg:w-1/2 md:w-8/12 w-full lg:px-8 lg:py-14 md:px-6 px-4 md:py-8 py-4  bg-[#bbcde5] rounded-2xl dark:bg-gray-800  overflow-x-hidden lg:h-screen h-auto"
-              id="scroll">
-              <div className="flex items-center text-gray-500 hover:text-gray-600 dark:text-white cursor-pointer">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon icon-tabler icon-tabler-chevron-left"
-                  width={16}
-                  height={16}
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <polyline points="15 6 9 12 15 18" />
-                </svg>
-                <p
-                  className="text-sm pl-2 leading-none dark:hover:text-gray-200"
-                  onClick={() => navigate(-1)}>
-                  Back
-                </p>
-              </div>
-              <p className="lg:text-4xl text-3xl font-black leading-10 text-gray-800 dark:text-white pt-3">
-                Your Items
-              </p>
-              <div className="md:flex items-strech py-8 md:py-10 lg:py-8 border-t border-gray-50"></div>
-              {cartItems.map((cartProducts) => {
-                return (
-                  <div
-                    key={cartProducts.id}
-                    className="md:flex items-strech py-8 md:py-10 lg:py-8 border-t border-gray-50">
-                    <div className="md:w-4/12 2xl:w-1/4 w-full">
-                      <img
-                        src={cartProducts.images[0]}
-                        alt="Gray Sneakers"
-                        className="h-full object-center object-cover md:block hidden"
-                      />
-                      <img
-                        src={cartProducts.images[0]}
-                        alt="Gray Sneakers"
-                        className="md:hidden w-full h-full object-center object-cover"
-                      />
-                    </div>
-                    <div className="md:pl-3 md:w-8/12 2xl:w-3/4 flex flex-col justify-center">
-                      <p className="text-xs leading-3 text-gray-800 dark:text-white md:pt-0 pt-4"></p>
-
-                      <div className="flex items-center justify-between w-full pt-1">
-                        <p className="text-base flex-1 font-black leading-none text-gray-800 dark:text-white">
-                          {cartProducts.title}
-                        </p>
-                        <div className="flex flex-[.4] items-center justify-end gap-5  w-[50px] ">
-                          <button
-                            onClick={() => {
-                              dispatch(
-                                addToCart({
-                                  id: cartProducts.id,
-                                })
-                              );
-                            }}
-                            className="active:scale-95 transition-transform duration-150 relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
-                            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                              +
-                            </span>
-                          </button>
-
-                          <p>{cartProducts.qty}</p>
-
-                          <button
-                            onClick={() => {
-                              dispatch(
-                                decrementQty({
-                                  id: cartProducts.id,
-                                })
-                              );
-                            }}
-                            className="active:scale-95 transition-transform duration-150 relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
-                            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                              -
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-                      <p className="text-xs leading-3 text-gray-600 dark:text-white pt-2">
-                        Dimensions: {cartProducts?.prodDetails[4]?.Dimensions}
-                      </p>
-                      <p className="text-xs leading-3 text-gray-600 dark:text-white py-4">
-                        Color: {cartProducts?.prodDetails[6]?.Colour}
-                      </p>
-                      <p className="w-96 text-xs leading-3 text-gray-600 dark:text-white">
-                        Composition: 100% calf leather
-                      </p>
-                      <div className="flex items-center justify-between pt-5">
-                        <div className="flex itemms-center">
-                          <p
-                            className="text-xs leading-3 underline text-gray-800 dark:text-white cursor-pointer"
-                            onClick={() => {
-                              dispatch(
-                                addToWishList({
-                                  id: cartProducts.id,
-                                })
-                              );
-                              dispatch(
-                                removeFromCart({
-                                  id: cartProducts.id,
-                                })
-                              );
-                              navigate("/wishlist");
-                            }}>
-                            Add to Wishlist
-                          </p>
-                          <p
-                            className="text-xs leading-3 underline text-red-500 pl-5 cursor-pointer"
-                            onClick={() => deleteCartItems(cartProducts.id)}>
-                            Remove
-                          </p>
-                        </div>
-                        <p className="text-base font-black leading-none text-gray-800 dark:text-white">
-                          &#8377; {cartProducts.sellingPrice}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <div
-              style={{
-                background: `linear-gradient(45deg, #ee9ca7 0%, #ffdde1 100%)`,
-              }}
-              className="lg:w-96 md:w-8/12 w-full bg-gray-100 dark:bg-gray-900 h-full">
-              <div className="flex flex-col lg:h-screen h-auto lg:px-8 md:px-7 px-4 lg:py-20 md:py-10 py-6 justify-between overflow-y-auto">
-                <div>
-                  <p className="lg:text-4xl text-3xl font-black leading-9 text-gray-800 dark:text-white">
-                    Summary
+              className="flex items-end lg:flex-row flex-col justify-center"
+              id="cart">
+              <div
+                style={{
+                  background: `linear-gradient(to right, #ffecd2 0%, #fcb69f 100%)`,
+                }}
+                className="lg:w-1/2 md:w-8/12 w-full lg:px-8 lg:py-14 md:px-6 px-4 md:py-8 py-4  bg-[#bbcde5] rounded-2xl dark:bg-gray-800  overflow-x-hidden lg:h-screen h-auto"
+                id="scroll">
+                <div className="flex items-center text-gray-500 hover:text-gray-600 dark:text-white cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon icon-tabler icon-tabler-chevron-left"
+                    width={16}
+                    height={16}
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <polyline points="15 6 9 12 15 18" />
+                  </svg>
+                  <p
+                    className="text-sm pl-2 leading-none dark:hover:text-gray-200"
+                    onClick={() => navigate(-1)}>
+                    Back
                   </p>
-                  <div className="flex items-center justify-between pt-16">
-                    <p className="text-base font-serif leading-none text-gray-800 dark:text-white">
-                      Total MRP :
-                    </p>
-                    <p className=" text-base  leading-none text-gray-800 dark:text-white">
-                      &#8377; {mrp}
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between pt-6">
-                    <p className="text-base font-serif leading-none text-gray-800 dark:text-white">
-                      Selling Price :
-                    </p>
-                    <p className="text-base  leading-none text-gray-800 dark:text-white">
-                      &#8377; {totalPrice}
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between pt-5">
-                    <p className="text-base font-serif leading-none text-gray-800 dark:text-white">
-                      Shipping
-                    </p>
-                    <p className="text-base  leading-none text-gray-800 dark:text-white">
-                      {totalPrice > 1000 ? (
-                        "Free shipping"
-                      ) : (
-                        <span>&#8377; 200</span>
-                      )}
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between pt-5">
-                    <p className="text-base font-serif leading-none text-gray-800 dark:text-white">
-                      Tax
-                    </p>
-                    <p className="text-base leading-none text-gray-800 dark:text-white" />
-                  </div>
                 </div>
-                <div>
-                  <div className="flex items-center pb-6 justify-between lg:pt-5 pt-20">
-                    <p className="text-2xl font-serif leading-normal text-gray-800 dark:text-white">
-                      Total :
+                <p className="lg:text-4xl text-3xl font-black leading-10 text-gray-800 dark:text-white pt-3">
+                  Your Items
+                </p>
+                <div className="md:flex items-strech py-8 md:py-10 lg:py-8 border-t border-gray-50"></div>
+                {cartItems?.map((cartProducts) => {
+                  return (
+                    <div
+                      key={cartProducts.id}
+                      className="md:flex items-strech py-8 md:py-10 lg:py-8 border-t border-gray-50">
+                      <div className="md:w-4/12 2xl:w-1/4 w-full">
+                        <img
+                          src={cartProducts.images[0]}
+                          alt="Gray Sneakers"
+                          className="h-full object-center object-cover md:block hidden"
+                        />
+                        <img
+                          src={cartProducts.images[0]}
+                          alt="Gray Sneakers"
+                          className="md:hidden w-full h-full object-center object-cover"
+                        />
+                      </div>
+                      <div className="md:pl-3 md:w-8/12 2xl:w-3/4 flex flex-col justify-center">
+                        <p className="text-xs leading-3 text-gray-800 dark:text-white md:pt-0 pt-4"></p>
+
+                        <div className="flex items-center justify-between w-full pt-1">
+                          <p className="text-base flex-1 font-black leading-none text-gray-800 dark:text-white">
+                            {cartProducts.title}
+                          </p>
+                          <div className="flex flex-[.4] items-center justify-end gap-5  w-[50px] ">
+                            <button
+                              onClick={() => {
+                                dispatch(
+                                  addToCart({
+                                    id: cartProducts.id,
+                                  })
+                                );
+                              }}
+                              className="active:scale-95 transition-transform duration-150 relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+                              <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                                +
+                              </span>
+                            </button>
+
+                            <p>{cartProducts.qty}</p>
+
+                            <button
+                              onClick={() => {
+                                dispatch(
+                                  decrementQty({
+                                    id: cartProducts.id,
+                                  })
+                                );
+                              }}
+                              className="active:scale-95 transition-transform duration-150 relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+                              <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                                -
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                        <p className="text-xs leading-3 text-gray-600 dark:text-white pt-2">
+                          Dimensions: {cartProducts?.prodDetails[4]?.Dimensions}
+                        </p>
+                        <p className="text-xs leading-3 text-gray-600 dark:text-white py-4">
+                          Color: {cartProducts?.prodDetails[6]?.Colour}
+                        </p>
+                        <p className="w-96 text-xs leading-3 text-gray-600 dark:text-white">
+                          Composition: 100% calf leather
+                        </p>
+                        <div className="flex items-center justify-between pt-5">
+                          <div className="flex itemms-center">
+                            <p
+                              className="text-xs leading-3 underline text-gray-800 dark:text-white cursor-pointer"
+                              onClick={() => {
+                                dispatch(
+                                  addToWishList({
+                                    id: cartProducts.id,
+                                  })
+                                );
+                                dispatch(
+                                  removeFromCart({
+                                    id: cartProducts.id,
+                                  })
+                                );
+                                navigate("/wishlist");
+                              }}>
+                              Add to Wishlist
+                            </p>
+                            <p
+                              className="text-xs leading-3 underline text-red-500 pl-5 cursor-pointer"
+                              onClick={() => deleteCartItems(cartProducts.id)}>
+                              Remove
+                            </p>
+                          </div>
+                          <p className="text-base font-black leading-none text-gray-800 dark:text-white">
+                            {priceFormat.format(cartProducts.sellingPrice)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div
+                style={{
+                  background: `linear-gradient(45deg, #ee9ca7 0%, #ffdde1 100%)`,
+                }}
+                className="lg:w-96 md:w-8/12 w-full bg-gray-100 dark:bg-gray-900 h-full">
+                <div className="flex flex-col lg:h-screen h-auto lg:px-8 md:px-7 px-4 lg:py-20 md:py-10 py-6 justify-between overflow-y-auto">
+                  <div>
+                    <p className="lg:text-4xl text-3xl font-black leading-9 text-gray-800 dark:text-white">
+                      Summary
                     </p>
-                    <p className="text-4xl font-serif leading-normal text-right text-gray-800 dark:text-white">
-                      &#8377;{" "}
-                      {totalPrice < 1000 ? totalPrice + 200 : totalPrice}
-                    </p>
+                    <div className="flex items-center justify-between pt-16">
+                      <p className="text-base font-serif leading-none text-gray-800 dark:text-white">
+                        Total MRP :
+                      </p>
+                      <p className=" text-base  leading-none text-gray-800 dark:text-white">
+                        {priceFormat.format(mrp)}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between pt-6">
+                      <p className="text-base font-serif leading-none text-gray-800 dark:text-white">
+                        Selling Price :
+                      </p>
+                      <p className="text-base  leading-none text-gray-800 dark:text-white">
+                        {priceFormat.format(totalPrice)}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between pt-5">
+                      <p className="text-base font-serif leading-none text-gray-800 dark:text-white">
+                        Shipping
+                      </p>
+                      <p className="text-base  leading-none text-gray-800 dark:text-white">
+                        {totalPrice > 1000 ? (
+                          "Free shipping"
+                        ) : (
+                          <span> {priceFormat.format(200)}</span>
+                        )}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between pt-5">
+                      <p className="text-base font-serif leading-none text-gray-800 dark:text-white">
+                        Tax
+                      </p>
+                      <p className="text-base leading-none text-gray-800 dark:text-white" />
+                    </div>
                   </div>
-                  <button
-                    className="text-white w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-                    onClick={() => handlePayment()}>
-                    Checkout
-                  </button>
+                  <div>
+                    <div className="flex items-center pb-6 justify-between lg:pt-5 pt-20">
+                      <p className="text-2xl font-serif leading-normal text-gray-800 dark:text-white">
+                        Total :
+                      </p>
+                      <p className="text-4xl font-serif leading-normal text-right text-gray-800 dark:text-white">
+                        {totalPrice < 1000
+                          ? priceFormat.format(totalPrice + 200)
+                          : priceFormat.format(totalPrice)}
+                      </p>
+                    </div>
+                    <button
+                      className="text-white w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+                      onClick={() => handlePayment()}>
+                      Checkout
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="font-serif flex items-center justify-center h-[80vh] text-3xl text-center">
+          Your Cart is Empty
+        </div>
+      )}
     </div>
   );
 };

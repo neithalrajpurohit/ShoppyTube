@@ -11,7 +11,7 @@ import {
   getAllCartItems,
   decrementQty,
 } from "../features/Cart/CartSlice";
-
+import priceFormat from "../utils/priceFormat";
 import { sizeMapper } from "../utils/productSizeMapper";
 
 const ProductDetails = () => {
@@ -133,10 +133,10 @@ const ProductDetails = () => {
           </h3>
           <div className="flex items-end gap-2 mt-2">
             <h3 className="text-3xl pt-2 font-serif">
-              &#8377;{productdetails.sellingPrice}
+              {priceFormat.format(productdetails.sellingPrice)}
             </h3>
             <p className="line-through text-gray-500">
-              &#8377;{productdetails.marketPrice}
+              {priceFormat.format(productdetails.marketPrice)}
             </p>
             <span className="text-[#ffad0a]">(20% OFF)</span>
           </div>

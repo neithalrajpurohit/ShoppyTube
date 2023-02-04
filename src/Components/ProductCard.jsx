@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import priceFormat from "../utils/priceFormat";
 
 const ProductCard = ({ decorBrand, id, brand, sP, mP, title, image }) => {
   const navigate = useNavigate();
@@ -79,10 +80,10 @@ const ProductCard = ({ decorBrand, id, brand, sP, mP, title, image }) => {
         </div>
         <div className="flex items-end justify-start gap-2">
           <span className="text-3xl font-bold text-gray-900 dark:text-white">
-            &#8377;{sP}
+            {priceFormat.format(sP)}
           </span>
           <span className="text-xl  text-gray-500 dark:text-white line-through">
-            &#8377;{mP}
+            {priceFormat.format(mP)}
           </span>
           <span className="text-[#ff871f]">(40% OFF)</span>
           {/* <a
