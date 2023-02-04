@@ -25,9 +25,17 @@ export const ProductSlice = createSlice({
       });
       state.data.productDetails = productDetails;
     },
+    getProductsBySearch: (state, action) => {
+      let product = productData.filter((item) => {
+        return item.title
+          .toLowerCase()
+          .includes(action.payload.title.toLowerCase());
+      });
+      state.data.products = product;
+    },
   },
 });
 
-export const { getProductsByCategory, getProductDetails } =
+export const { getProductsByCategory, getProductDetails, getProductsBySearch } =
   ProductSlice.actions;
 export default ProductSlice.reducer;

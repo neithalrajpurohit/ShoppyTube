@@ -8,6 +8,8 @@ import { Route, Routes } from "react-router-dom";
 import ProductDetails from "./Components/ProductDetails";
 import Cart from "./Components/Cart";
 import WishList from "./Components/WishList";
+import Signup from "./Components/Signup";
+import Login from "./Components/Login";
 function App() {
   return (
     <div>
@@ -22,6 +24,8 @@ function App() {
         />
         <Route path="/cart" element={<Cart />} />
         <Route path="/wishlist" element={<WishList />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </div>
   );

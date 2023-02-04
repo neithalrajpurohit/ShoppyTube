@@ -1,20 +1,29 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import useCategories from "../CustomHooks/useCategories";
-import { useParams } from "react-router-dom";
-import { getProductsByCategory } from "../features/Products/ProductSlice";
+import { useParams, useLocation } from "react-router-dom";
+import {
+  getProductsByCategory,
+  getProductsBySearch,
+} from "../features/Products/ProductSlice";
 import ProductCard from "./ProductCard";
 import Header from "./Header";
+
 const ProductList = () => {
   const dispatch = useDispatch();
   const productData = useSelector((state) => state.product.data.products);
-
+  const location = useLocation();
   const [womenProduct, decorProduct, womenBrand] = useCategories();
   let params = useParams();
 
   useEffect(() => {
-    dispatch(getProductsByCategory({ id: params.categoryId }));
-  }, []);
+    if (location.state?.type == "search") {
+      // getallproducts by search query
+      dispatch(getProductsBySearch({ title: location.state.query }));
+    } else {
+      dispatch(getProductsByCategory({ id: params.categoryId }));
+    }
+  }, [location.state]);
 
   return (
     <div>
@@ -23,6 +32,12 @@ const ProductList = () => {
         {" "}
         Happy Shopping
       </h2>
+      {location.state.type === "search" ? (
+        <div className="text-center text-2xl font-serif">
+          Search results for
+          <span className="text-3xl font-serif"> : {location.state.query}</span>
+        </div>
+      ) : null}
       <div className=" pt-6 flex bg-[#ffd4ca]  justify-center flex-wrap gap-[15px] ">
         {productData.map((product) => {
           return (
@@ -38,7 +53,6 @@ const ProductList = () => {
             />
           );
         })}
-        ProductList
       </div>
     </div>
   );
