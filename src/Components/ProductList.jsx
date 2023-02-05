@@ -5,6 +5,7 @@ import { useParams, useLocation } from "react-router-dom";
 import {
   getProductsByCategory,
   getProductsBySearch,
+  getFeaturedProduct,
 } from "../features/Products/ProductSlice";
 import ProductCard from "./ProductCard";
 import Header from "./Header";
@@ -12,13 +13,22 @@ import Header from "./Header";
 const ProductList = () => {
   const dispatch = useDispatch();
   const productData = useSelector((state) => state.product.data.products);
+  console.log(productData);
   const location = useLocation();
   const [womenProduct, decorProduct, womenBrand] = useCategories();
   let params = useParams();
 
   useEffect(() => {
-    if (location.state?.type == "search") {
+    if (location.state?.type === "search") {
       // getallproducts by search query
+      dispatch(getProductsBySearch({ title: location.state.query }));
+    } else if (location.state?.type === "home") {
+      dispatch(
+        getFeaturedProduct({
+          id: location.state.id,
+        })
+      );
+    } else if (location.state?.type === "title") {
       dispatch(getProductsBySearch({ title: location.state.query }));
     } else {
       dispatch(getProductsByCategory({ id: params.categoryId }));

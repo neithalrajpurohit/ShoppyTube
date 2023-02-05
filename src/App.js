@@ -10,6 +10,7 @@ import Cart from "./Components/Cart";
 import WishList from "./Components/WishList";
 import Signup from "./Components/Signup";
 import Login from "./Components/Login";
+
 function App() {
   return (
     <div>

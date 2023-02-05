@@ -3,21 +3,26 @@ import Header from "./Header";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import useRazorpay from "react-razorpay";
+import axios from "axios";
 import { v4 } from "uuid";
 import {
   addToCart,
-  getAllCartItems,
   removeFromCart,
   decrementQty,
 } from "../features/Cart/CartSlice";
 import { addToWishList } from "../features/Wishlist/WishListSlice";
+
 import priceFormat from "../utils/priceFormat";
+import Order from "./Order";
+
 const Cart = () => {
   const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cart.cartItems);
   const dispatch = useDispatch();
+  const [showModal, setShowModal] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
   const [mrp, setMRP] = useState(0);
+
   function deleteCartItems(id) {
     dispatch(removeFromCart({ id }));
   }
@@ -38,50 +43,60 @@ const Cart = () => {
   }, [cartItems]);
   const Razorpay = useRazorpay();
 
+  console.log(process.env.REACT_APP_SERVER_URL);
   const handlePayment = async (params) => {
     //  Create order on your backend
-    const rzp1 = new Razorpay({
-      key_id: process.env.REACT_APP_RAZORPAY_KEYS,
-      key_secret: process.env.REACT_APP_RAZORPAY_SECRET,
-    });
-    const options = {
-      // Enter the Key ID generated from the Dashboard
-      amount: totalPrice, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-      currency: "INR",
-      name: "SHOPPY TUBE",
-      description: "Test Transaction",
-      image: "https://example.com/your_logo",
-      order_id: "order.id", //This is a sample Order ID. Pass the `id` obtained in the response of createOrder().
-      handler: function (response) {
-        alert(response.razorpay_payment_id);
-        alert(response.razorpay_order_id);
-        alert(response.razorpay_signature);
-      },
-      prefill: {
-        name: "Piyush Garg",
-        email: "youremail@example.com",
-        contact: "9999999999",
-      },
-      notes: {
-        address: "Razorpay Corporate Office",
-      },
-      theme: {
-        color: "#3399cc",
-      },
-    };
-    let order = await rzp1.orders.create(options);
+    let user = localStorage.getItem("user");
+    if (user) {
+      user = JSON.parse(user);
+      let order = await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/order`,
+        {
+          amount: totalPrice,
+          name: user.name,
+        },
+        {
+          "content-type": "application/json",
+        }
+      );
+      const options = {
+        key: process.env.REACT_APP_RAZORPAY_KEYS, // Enter the Key ID generated from the Dashboard
+        amount: totalPrice * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        currency: "INR",
+        name: user.name,
+        description: "shoppy tube Transaction",
+        image: "https://example.com/your_logo",
+        order_id: order.data.id, //This is a sample Order ID. Pass the `id` obtained in the response of createOrder().
+        handler: function (response) {
+          setShowModal(true);
+          // alert(response.razorpay_payment_id);
+          // alert(response.razorpay_order_id);
+          // alert(response.razorpay_signature);
+        },
+        prefill: {
+          name: user.name,
+          email: user.email,
+        },
 
-    rzp1.on("payment.failed", function (response) {
-      alert(response.error.code);
-      alert(response.error.description);
-      alert(response.error.source);
-      alert(response.error.step);
-      alert(response.error.reason);
-      alert(response.error.metadata.order_id);
-      alert(response.error.metadata.payment_id);
-    });
+        theme: {
+          color: "#3399cc",
+        },
+      };
+      console.log(order);
+      const rzp1 = new Razorpay(options);
 
-    rzp1.open();
+      rzp1.on("payment.failed", function (response) {
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+      });
+
+      rzp1.open();
+    }
   };
 
   return (
@@ -91,6 +106,8 @@ const Cart = () => {
       }}
       className="bg-[#639fab] min-h-[100vh]">
       <Header />
+      {showModal && <Order setShowModal={setShowModal} />}
+
       {cartItems?.length >= 1 ? (
         <div
           className="bg-[#e6e6e6] rounded-2xl  w-full h-full  dark:bg-gray-900 bg-opacity-90 top-0 overflow-y-auto "

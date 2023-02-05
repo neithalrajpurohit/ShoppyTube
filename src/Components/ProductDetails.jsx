@@ -18,12 +18,18 @@ const ProductDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   let params = useParams();
-  const [mark, setMark] = useState(null);
+  const [mark, setMark] = useState({ size: 0, stock: 0, index: null });
 
   const productdetails = useSelector(
     (state) => state.product.data.productDetails
   );
-
+  let outOfStock = true;
+  if (productdetails?.sizes) {
+    outOfStock = productdetails?.sizes?.every((size) => {
+      return Number(size.stock) >= 1;
+    });
+  }
+  console.log(productdetails?.sizes);
   const cartItems = useSelector((state) => state.cart.cartItems);
 
   // console.log(cartItems);
@@ -156,7 +162,7 @@ const ProductDetails = () => {
                     <button
                       style={{
                         background:
-                          mark === i
+                          mark.index === i && !outOfStock
                             ? "linear-gradient(-20deg, #f794a4 0%, #fdd6bd 100%)"
                             : "white",
                         border:
@@ -168,7 +174,13 @@ const ProductDetails = () => {
                           Number(size.stock) >= 1 ? "pointer" : "not-allowed",
                       }}
                       className="border-1 rounded-full w-[50px] h-[50px] flex justify-center items-center border border-[#fdd6bd]"
-                      onClick={() => setMark(i)}>
+                      onClick={() =>
+                        setMark({
+                          size: size.size,
+                          stock: Number(size.stock),
+                          index: i,
+                        })
+                      }>
                       {isNaN(size.size) ? sizeMapper(size.size) : size.size}
                     </button>
                   </div>
@@ -176,72 +188,78 @@ const ProductDetails = () => {
               })}
             </div>
           )}
-          <div className="flex items-center m-5 gap-8 mt-8">
-            {!toggleButton ? (
-              <button
-                onClick={() => dispatch(addToCart({ id: productdetails.id }))}
-                className="inline-flex items-center  text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
-                <svg
-                  aria-hidden="true"
-                  className="w-5 h-5 mr-2 -ml-1"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
-                </svg>
-                Add to Cart
-              </button>
-            ) : (
-              <button
-                onClick={() => navigate("/cart")}
-                className="inline-flex items-center  text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-md text-sm px-7 py-3 text-center mr-2 mb-2">
-                <svg
-                  aria-hidden="true"
-                  className="w-5 h-5 mr-2 -ml-1"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
-                </svg>
-                Go to Cart
-              </button>
-            )}
-            <div className="flex items-center gap-5 ">
-              <button
-                onClick={() => {
-                  dispatch(
-                    addToCart({
-                      id: productdetails.id,
-                    })
-                  );
-                }}
-                className="active:scale-95 transition-transform duration-150 relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
-                <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                  +
-                </span>
-              </button>
+          {outOfStock ? (
+            <div className="flex items-center m-5 gap-8 mt-8">
+              {!toggleButton ? (
+                <button
+                  onClick={() => dispatch(addToCart({ id: productdetails.id }))}
+                  className="inline-flex items-center  text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                  <svg
+                    aria-hidden="true"
+                    className="w-5 h-5 mr-2 -ml-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
+                  </svg>
+                  Add to Cart
+                </button>
+              ) : (
+                <button
+                  onClick={() => navigate("/cart")}
+                  className="inline-flex items-center  text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-md text-sm px-7 py-3 text-center mr-2 mb-2">
+                  <svg
+                    aria-hidden="true"
+                    className="w-5 h-5 mr-2 -ml-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
+                  </svg>
+                  Go to Cart
+                </button>
+              )}
+              <div className="flex items-center gap-5 ">
+                <button
+                  onClick={() => {
+                    dispatch(
+                      addToCart({
+                        id: productdetails.id,
+                        size: mark.size,
+                        stock: mark.stock,
+                      })
+                    );
+                  }}
+                  className="active:scale-95 transition-transform duration-150 relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+                  <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                    +
+                  </span>
+                </button>
 
-              <p>
-                {cartItems?.find((item) => {
-                  return item.id === productdetails.id;
-                })?.qty || 0}
-              </p>
+                <p>
+                  {cartItems?.find((item) => {
+                    return item.id === productdetails.id;
+                  })?.qty || 0}
+                </p>
 
-              <button
-                onClick={() => {
-                  dispatch(
-                    decrementQty({
-                      id: productdetails.id,
-                    })
-                  );
-                }}
-                className="active:scale-95 transition-transform duration-150 relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
-                <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                  -
-                </span>
-              </button>
+                <button
+                  onClick={() => {
+                    dispatch(
+                      decrementQty({
+                        id: productdetails.id,
+                      })
+                    );
+                  }}
+                  className="active:scale-95 transition-transform duration-150 relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+                  <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                    -
+                  </span>
+                </button>
+              </div>
             </div>
-          </div>
+          ) : (
+            <p>Out of stock</p>
+          )}
 
           {/* {More product details} */}
           <h2 className="text-slate-600 text-3xl mt-[60px]">Product Details</h2>

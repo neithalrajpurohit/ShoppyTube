@@ -34,7 +34,9 @@ const CartSlice = createSlice({
         allCartItems.push({ ...currentProduct, qty: 1 });
         localStorage.setItem("cart", JSON.stringify(allCartItems));
       }
+
       allCartItems?.sort((a, b) => (a.title > b.title ? 1 : -1));
+
       state.cartItems = allCartItems;
     },
     getAllCartItems: (state) => {
@@ -89,9 +91,18 @@ const CartSlice = createSlice({
       state.cartItems = allCartItems;
       localStorage.setItem("cart", JSON.stringify(allCartItems));
     },
+    revertCart: (state, action) => {
+      localStorage.removeItem("cart");
+      state.cartItems = [];
+    },
   },
 });
-export const { addToCart, getAllCartItems, decrementQty, removeFromCart } =
-  CartSlice.actions;
+export const {
+  addToCart,
+  getAllCartItems,
+  decrementQty,
+  removeFromCart,
+  revertCart,
+} = CartSlice.actions;
 
 export default CartSlice.reducer;

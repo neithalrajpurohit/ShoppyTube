@@ -33,9 +33,23 @@ export const ProductSlice = createSlice({
       });
       state.data.products = product;
     },
+    getFeaturedProduct: (state, action) => {
+      let product = productData?.filter((item) => {
+        if (item?.categoryID === action.payload?.id) {
+          return true;
+        }
+        return false;
+      });
+      console.log(product);
+      state.data.products = product;
+    },
   },
 });
 
-export const { getProductsByCategory, getProductDetails, getProductsBySearch } =
-  ProductSlice.actions;
+export const {
+  getProductsByCategory,
+  getProductDetails,
+  getProductsBySearch,
+  getFeaturedProduct,
+} = ProductSlice.actions;
 export default ProductSlice.reducer;
